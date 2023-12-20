@@ -1,4 +1,5 @@
 {
+  // this file is needed for react-scripts start
   "include":["./**/*.ts", "./**/*.tsx"],
   "exclude":["node_modules"],
   "compilerOptions": {

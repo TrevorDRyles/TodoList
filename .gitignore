@@ -9,7 +9,13 @@
 /coverage
 
 # production
-/build
+client/build
+server/build
+package-lock.json
+server/package-lock.json
+node_modules
+client/package-lock.json
+.idea
 
 # misc
 .DS_Store
