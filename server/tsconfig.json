@@ -1,0 +1,23 @@
+{
+  // take ts and tsx files and compile them into js
+  "include":["./**/*.ts", "./**/*.tsx"],
+  // ignore node_modules
+  "exclude":["node_modules"],
+  "compilerOptions": {
+    // output compiled files into ./build
+    "outDir": "./build",
+    "module": "es6",
+    "target": "es2020",
+//    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "noEmit": false,
+    "allowJs": true,
+    "checkJs": true,
+    "jsx": "react",
+    "sourceMap": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true
+  }
+}

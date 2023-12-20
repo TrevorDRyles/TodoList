@@ -1,5 +1,6 @@
-import pkg from "pg";
-const {Pool} = pkg;
+import pkg from 'pg';
+const { Pool } = pkg;
+
 
 // Create a PostgreSQL connection pool
 const pool = new Pool({
