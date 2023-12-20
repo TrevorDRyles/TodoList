@@ -11,3 +11,5 @@ Node
 Express
 React
 Postgres
+![alt](https://i.imgur.com/SkfGR1O.png)
+![alt](https://i.imgur.com/frNwM38.png)
