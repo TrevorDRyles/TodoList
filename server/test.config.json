@@ -1,0 +1,11 @@
+{
+  "roots": ["./test"],
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "testMatch": ["**/build/test/**/*.test.js"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "node"
+  ]
+}

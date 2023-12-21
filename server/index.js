@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
-import pool from "./pool.js"
+const express = require("express");
+const cors    = require("cors");
+const pool    = require("./pool.js");
 
-let setupServer = () => {
+const setupServer = () => {
     const app = express();
 // create a server and listen on port 3000
     app.use(cors());
@@ -63,5 +63,5 @@ let setupServer = () => {
     return app;
 };
 const App = setupServer();
-export default App;
+module.exports = App;
 

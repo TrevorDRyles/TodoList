@@ -1,5 +1,5 @@
-import app from  "./index.js"
+const app = require("./index");
 let server = app.listen(5000, () => {
     console.log("Listening");
 })
-export default server;
+module.exports = server;

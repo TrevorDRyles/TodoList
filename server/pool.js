@@ -1,4 +1,4 @@
-import pkg from 'pg';
+const pkg = require('pg');
 const { Pool } = pkg;
 
 
@@ -12,4 +12,4 @@ const pool = new Pool({
     idleTimeoutMillis: 30000, // Time a connection can be idle before being closed
 });
 
-export default pool;
+module.exports = pool;

@@ -11,6 +11,8 @@
 # production
 client/build
 server/build
+server/coverage
+
 package-lock.json
 server/package-lock.json
 node_modules
