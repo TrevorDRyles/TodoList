@@ -28,13 +28,14 @@ const setupServer = () => {
 
     app.get("/todo/:id", async (req, res) => {
         try {
-            const id =req.params.id;
+            const id = req.params.id;
             const todo = await todoListService.get(id);
             if (todo == null) {
                 res.status(404);
                 res.json({error: 'Not Found'});
             } else {
                 res.json(todo.dataValues);
+                res.status(200);
             }
         } catch (err) {
             console.log(err);
@@ -60,22 +61,26 @@ const setupServer = () => {
     });
 
     app.delete("/todo/:id", async (req, res) => {
+        const id = req.params.id;
+        let result;
         try {
-            const id = req.params.id;
-            let result;
             await todoListService.inTransaction(async (t) => {
                 result = await todoListService.delete(id, t);
             });
             // const todo_ = await pool.query("DELETE FROM todos WHERE todo_id=$1 RETURNING *", [id]);
-            if(result === 0){
+            if (result === 0) {
                 res.status(404);
                 res.json({error: 'Could not delete resource -- not found'});
-            }else{
+            } else if (result > 0) {
                 res.status(204);
                 res.json({});
+            } else {
+                // undefined
+                // rollback
+                res.status(500);
+                res.json({error: 'Error in transaction'});
             }
-        } catch (err) {
-            console.log(err);
+        }catch(error){
             res.status(500);
             res.json({error: 'Server error'});
         }
@@ -89,11 +94,16 @@ const setupServer = () => {
             await todoListService.inTransaction(async (t) => {
                 result = await todoListService.update(id, desc, t);
             });
-            if (result == null) {
+            if(result == null){
+                res.status(500);
+                res.json({error: 'Server error -- transaction not completed'});
+            }else if (result[0] === 0) {
                 res.status(404);
                 res.json({error: 'Not Found'});
             } else {
+                // result[0] > 0
                 res.json(result[1][0]);
+                res.status(200);
             }
         } catch (err) {
             console.log(err);

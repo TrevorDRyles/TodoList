@@ -22,7 +22,7 @@ class TodoListService {
             return t.commit();
         } catch (error) {
             // rollback work
-            t.rollback();
+            await t.rollback();
         }
     }
 
