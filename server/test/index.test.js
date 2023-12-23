@@ -5,7 +5,7 @@ const app = require('../index');
 
 describe('test the todo list API', () => {
 
-    test('GET /todos should get all todos from the todo list', async () => {
+    test('GET /todos should get all todos from the todo list and return 200', async () => {
         const res = await request(app).get('/todos').send();
         expect(res.statusCode).toEqual(200);
         expect(res.body.length).toBeGreaterThanOrEqual(0);
@@ -21,7 +21,7 @@ describe('test the todo list API', () => {
         expect(res.body.error).toEqual("Server error");
     })
 
-    test('GET /todo/:id should get a todo from the todo list', async () => {
+    test('GET /todo/:id should get a todo from the todo list and return 200', async () => {
         // create todo_item first
         const res1 = await request(app).post('/todos').send({description: "temp"});
         let desc = res1.body.description;
@@ -29,10 +29,10 @@ describe('test the todo list API', () => {
 
         const res = await request(app).get(`/todo/${id}`).send();
         expect(res.statusCode).toEqual(200);
-        expect(res.body.description).toEqual("temp");
+        expect(res.body.description).toEqual(desc);
     });
 
-    test('GET /todo/:id should with id not found should return 404 not found', async () => {
+    test('GET /todo/:id with id not found should return 404 not found', async () => {
         const res = await request(app).get(`/todo/649107`).send();
         expect(res.statusCode).toEqual(404);
         expect(res.body.error).toEqual("Not Found");
@@ -48,24 +48,30 @@ describe('test the todo list API', () => {
         expect(res.body.error).toEqual("Server error");
     });
 
-    test('POST /todos should add a new todo list and return 200', async () => {
-        // create todo_item first
-        const res1 = await request(app).post('/todos').send({description: "temp"});
-        let desc = res1.body.description;
-        let id = res1.body.todo_id;
-
+    test('POST /todos should add a new todo list and return 201 created', async () => {
         // get todo_ item
-        const res = await request(app).get(`/todo/${id}`).send();
-        expect(res.statusCode).toEqual(200);
-        expect(res.body.description).toEqual(desc);
+        const res = await request(app).post(`/todos`).send({description: 'desc'});
+        expect(res.statusCode).toEqual(201);
+        expect(res.body.description).toEqual("desc");
 
         // delete todo_ item
-        const res2 = await request(app).delete(`/todo/${id}`).send();
+        await request(app).delete(`/todo/${res.body.id}`).send();
     });
 
-    test('POST /todos with an error should return error code 500 server error', async () => {
+    test('POST /todos with an error in create should return error code 500 server error', async () => {
         let desc = 'Server error';
         jest.spyOn(TodoListService.prototype, 'create')
+            .mockRejectedValueOnce(() => {
+                throw new Error(desc)
+            });
+        const res = await request(app).post('/todos').send({description: 'desc'});
+        expect(res.statusCode).toEqual(500);
+        expect(res.body.error).toEqual("Server error -- couldn't create transaction");
+    });
+
+    test('POST /todos with an error in inTransaction should return error code 500 server error', async () => {
+        let desc = 'Server error';
+        jest.spyOn(TodoListService.prototype, 'inTransaction')
             .mockRejectedValueOnce(() => {
                 throw new Error(desc)
             });
@@ -93,8 +99,7 @@ describe('test the todo list API', () => {
         expect(res2.body.error).toEqual('Could not delete resource -- not found');
     });
 
-    test('DELETE /todo/:id with server error sho' +
-        'uld return 500 server error', async () => {
+    test('DELETE /todo/:id with server error should return 500 server error', async () => {
         jest.spyOn(TodoListService.prototype, 'inTransaction')
             .mockRejectedValueOnce(() => {
                 throw new Error("Server error");
@@ -117,10 +122,9 @@ describe('test the todo list API', () => {
     });
 
     // update
-    test('PUT /todo/:id should update a todo list and return 200', async () => {
+    test('PUT /todo/:id should update a todo list and return 200 ok', async () => {
         // create todo_item first
         const res1 = await request(app).post('/todos').send({description: "temp"});
-        let desc = res1.body.description;
         let id = res1.body.todo_id;
 
         // get todo_ item
@@ -132,14 +136,14 @@ describe('test the todo list API', () => {
         const res2 = await request(app).delete(`/todo/${id}`).send();
     });
 
-    test('PUT /todo/:id with id not found should return 404 not found', async() => {
+    test('PUT /todo/:id with id not found should return 404 not found', async () => {
         // get todo_ item
         const res = await request(app).put(`/todo/237948`).send({description: "something new"});
         expect(res.statusCode).toEqual(404);
         expect(res.body.error).toEqual("Not Found");
     });
 
-    test('PUT /todo/:id with id transaction not complete should return 500 server error', async() => {
+    test('PUT /todo/:id with id transaction not complete should return 500 server error', async () => {
         jest.spyOn(TodoListService.prototype, 'update')
             .mockRejectedValueOnce(() => {
                 throw new Error("Server error -- transaction not completed");
@@ -150,7 +154,7 @@ describe('test the todo list API', () => {
         expect(res.body.error).toEqual('Server error -- transaction not completed');
     });
 
-    test('PUT /todo/:id with id transaction not complete should return 500 server error', async() => {
+    test('PUT /todo/:id with id transaction not complete should return 500 server error', async () => {
         jest.spyOn(TodoListService.prototype, 'inTransaction')
             .mockRejectedValueOnce(() => {
                 throw new Error("Server error -- transaction not completed");

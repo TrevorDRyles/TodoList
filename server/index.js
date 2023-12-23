@@ -52,7 +52,13 @@ const setupServer = () => {
             await todoListService.inTransaction(async (t) => {
                 result = await todoListService.create(description, t);
             });
-            res.json(result.dataValues);
+            if (result === undefined) {
+                res.status(500);
+                res.json({error: "Server error -- couldn't create transaction"});
+            } else {
+                res.status(201);
+                res.json(result.dataValues);
+            }
         } catch (err) {
             console.log(err);
             res.status(500);
@@ -80,7 +86,7 @@ const setupServer = () => {
                 res.status(500);
                 res.json({error: 'Error in transaction'});
             }
-        }catch(error){
+        } catch (error) {
             res.status(500);
             res.json({error: 'Server error'});
         }
@@ -94,10 +100,10 @@ const setupServer = () => {
             await todoListService.inTransaction(async (t) => {
                 result = await todoListService.update(id, desc, t);
             });
-            if(result == null){
+            if (result == null) {
                 res.status(500);
                 res.json({error: 'Server error -- transaction not completed'});
-            }else if (result[0] === 0) {
+            } else if (result[0] === 0) {
                 res.status(404);
                 res.json({error: 'Not Found'});
             } else {
