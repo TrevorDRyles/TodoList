@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders without crashing 1`] = `
+<form
+  onSubmit={[Function]}
+>
+  <div
+    className="row mt-5 ml-5"
+  >
+    <div
+      className="form-group col-6"
+    >
+      <input
+        className="form-control"
+        id="add"
+        placeholder="Add"
+        type="text"
+      />
+    </div>
+    <button
+      className="btn btn-primary"
+      type="submit"
+    >
+      Submit
+    </button>
+  </div>
+</form>
+`;

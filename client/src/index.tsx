@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import ListTodo from "./ListTodo";
-import TodoSearch from "./TodoAdd";
+import TodoAdd from "./TodoAdd";
 
 const val = document.getElementById('root');
 if (val != null) {
@@ -9,7 +9,7 @@ if (val != null) {
     root.render(
         <React.StrictMode>
             <h1>Trevor's "TODO_List"</h1>
-            <TodoSearch/>
+            <TodoAdd/>
             <ListTodo/>
         </React.StrictMode>
     );
