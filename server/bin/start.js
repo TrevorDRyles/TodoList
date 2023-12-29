@@ -7,7 +7,7 @@ function connectToMyPostgres(sequelize = new Sequelize(config.postgres.options))
             // console.info("Successfully connected to Postgres");
         })
         .catch((error) => {
-            // console.error(error);
+            console.error(error);
             process.exit(1);
         });
     return sequelize;
@@ -18,4 +18,9 @@ const postgres = connectToMyPostgres();
 // postgres client is the instance of Sequelize that is connected to Postgres
 config.postgres.client = postgres;
 
-module.exports = connectToMyPostgres;
+// Load Sequelize models
+const models = require('../models/sequelize');
+
+module.exports = { sequelize: postgres, models };
+
+// module.exports = connectToMyPostgres;

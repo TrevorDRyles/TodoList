@@ -1,7 +1,4 @@
-const request = require('supertest');
 const connectToPostgres = require("../bin/start");
-const TodoListService = require("../services/TodoListService");
-const app = require('../index');
 
 describe('test the connectToMyPostgres function', () => {
 
@@ -13,7 +10,7 @@ describe('test the connectToMyPostgres function', () => {
         const sequelize = {
             authenticate: jest.fn().mockRejectedValueOnce(new Error('Connection failed')),
         };
-        const exitMock = jest.spyOn(process, 'exit').mockImplementationOnce((code) => {
+        jest.spyOn(process, 'exit').mockImplementationOnce((code) => {
             // Assert that process.exit was called with the expected exit code
             expect(code).toBe(1);
         });

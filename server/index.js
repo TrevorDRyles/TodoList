@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-// const pool = require("./pool.js");
-// const {postgres} = require("./config");
 const setupTodoRoutes = require("./routes/todos");
 
 const setupServer = () => {

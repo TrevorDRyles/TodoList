@@ -4,7 +4,6 @@ const TodoListService = require("../services/TodoListService");
 const app = require('../index');
 
 describe('test the todo list API', () => {
-
     describe('Get', () => {
 
         test('GET /todos should get all todos from the todo list and return 200', async () => {

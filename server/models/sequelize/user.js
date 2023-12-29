@@ -1,19 +1,17 @@
-const {DataTypes} = require("sequelize");
-const {postgres} = require("../../config");
+module.exports = (sequelize, DataTypes) => {
 
-const sequelize = postgres.client;
-const User = sequelize.define("user", {
-    userid: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
+    const User = sequelize.define("user", {
+        userid: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },
 
-    username: DataTypes.STRING,
-    password: DataTypes.STRING
-});
-User.associate = (models) => {
-    User.hasOne(models.TodoList, {foreignKey: "userid"});
+        username: DataTypes.STRING,
+        password: DataTypes.STRING
+    });
+    User.associate = (models) => {
+        User.hasOne(models.todolist, {foreignKey: "userid"});
+    }
+    return User;
 }
-module.exports = User;
-

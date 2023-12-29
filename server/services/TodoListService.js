@@ -1,17 +1,11 @@
-// const Models = require("../models/sequelize");
-require("../models/sequelize/todolist")
-require("../models/sequelize/todo")
-require("../models/sequelize/user")
-
+const Models = require("../models/sequelize");
 // the service provides actions for the TodoList like CRUD
 class TodoListService {
     constructor(sequelize) {
-        // define the model if its not already defined
-        // Models(sequelize);
         // define client so the service can connect to the database
         this.client = sequelize;
         // access list of models from this service
-        this.models = sequelize.models;
+        this.models = Models;
     }
 
 
