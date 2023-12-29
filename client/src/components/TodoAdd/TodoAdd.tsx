@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {useRef} from "react";
+import styles from './TodoAdd.module.css';
 
 function TodoAdd() {
     // refs are used to reference the value of an element
@@ -27,7 +28,7 @@ function TodoAdd() {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className={styles.todoAdd}>
             <div className={"row mt-5 ml-5"}>
                 <div className="form-group col-6">
                     <input ref={listAdd} type="text" className="form-control" id="add" placeholder="Add"></input>

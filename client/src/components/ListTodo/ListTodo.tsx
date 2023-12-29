@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {useEffect, useRef, useState} from "react";
 import Modal from 'react-modal'
+import styles from './ListTodo.module.css'
 // make console happy
 Modal.setAppElement('#root');
 
@@ -131,9 +132,12 @@ function ListTodo() {
                 onRequestClose={closeModal}
                 style={modalStyle}
                 contentLabel="Example Modal"
+                className={styles.modalContent}
+                overlayClassName={styles.modalOverlay}
+
             >
                 {/* Modal content goes here */}
-                <h2 id={"modalTitle"}>{modalTitle}</h2>
+                <h2 id={"modalTitle"} className={styles.header}>{modalTitle}</h2>
                 <form onSubmit={handleEdit}>
                     <div className={"row mt-5 ml-5"}>
                         <div className="form-group col-6">

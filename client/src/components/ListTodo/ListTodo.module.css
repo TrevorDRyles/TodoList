@@ -1,0 +1,24 @@
+.modalContent {
+    width: 50%;
+    margin: auto;
+    height: 100%;
+    position: absolute;
+    inset: 40px;
+    border: 1px solid rgb(204, 204, 204);
+    background-color: #f2b780;
+    overflow: auto;
+    border-radius: 4px;
+    outline: none;
+    padding: 20px;
+}
+
+.header {
+    width: 100%;
+    background-color: #750219; /* Set background color as needed */
+    color: #fff; /* Set text color as needed */
+    padding: 10px; /* Add padding as needed */
+    box-sizing: border-box; /* Include padding in the total width */
+    text-align: center; /* Center text horizontally */
+    /*position: fixed;*/
+    /*top: 0*/
+}

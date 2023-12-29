@@ -1,0 +1,40 @@
+/*.homePage {*/
+/*    background-color: #F5F5DC;*/
+/*}*/
+
+h1 {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 80%;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    max-width: 600px; /* Adjust as needed */
+}
+
+.container > * {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+#header {
+    width: 100%;
+    background-color: #750219; /* Set background color as needed */
+    color: #fff; /* Set text color as needed */
+    padding: 10px; /* Add padding as needed */
+    box-sizing: border-box; /* Include padding in the total width */
+    text-align: center; /* Center text horizontally */
+    /*position: fixed;*/
+    /*top: 0*/
+}
