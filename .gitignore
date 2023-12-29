@@ -10,11 +10,11 @@
 
 # production
 client/build
-server/build
-server/coverage
+app/build
+app/coverage
 
 package-lock.json
-server/package-lock.json
+app/package-lock.json
 node_modules
 client/package-lock.json
 .idea

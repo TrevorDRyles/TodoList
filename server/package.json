@@ -2,10 +2,10 @@
   "name": "trevorstodolist",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "test": "cross-env DATABASE_URI=postgresql://postgres:postgres@localhost:5432/perntodo jest --collectCoverage --forceExit --detectOpenHandles",
-    "start": "nodemon server.js"
+    "start": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
