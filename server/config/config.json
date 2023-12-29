@@ -1,0 +1,25 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "password",
+    "database": "perntodo",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 5432,
+    "operatorsAliases": false
+  },
+  "test": {
+    "username": "postgres",
+    "password": "password",
+    "database": "perntodo",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 5432,
+    "operatorsAliases": false
+  },
+  "production": {
+    "use_env_variable": "DATABASE_URL",
+    "dialect": "postgres",
+    "operatorsAliases": false
+  }
+}
