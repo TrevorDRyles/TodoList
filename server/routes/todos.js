@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const {postgres} = require("../config/index");
+const TodoListService = require("../services/TodoListService");
 
-const setupTodoRoutes = (todoListService) => {
+const setupTodoRoutes = () => {
     // map from localhost/todos to all todo_list items
-
+    const todoListService = new TodoListService(postgres.client);
     // map from localhost/todos to all todo_list items
     router.get("/todos", async (req, res) => {
         try {

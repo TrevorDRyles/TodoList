@@ -31,7 +31,7 @@ describe('test the todo list API', () => {
             // create todo_item first
             const res1 = await request(app).post('/todos').send({description: "temp"});
             let desc = res1.body.description;
-            let id = res1.body.todo_id;
+            let id = res1.body.todoid;
 
             const res = await request(app).get(`/todo/${id}`).send();
             expect(res.statusCode).toEqual(200);
@@ -67,7 +67,7 @@ describe('test the todo list API', () => {
             expect(res.body.description).toEqual("desc");
 
             // delete todo_ item
-            await request(app).delete(`/todo/${res.body.todo_id}`).send();
+            await request(app).delete(`/todo/${res.body.todoid}`).send();
         });
 
         test('POST /todos with an error in create should return error code 500 server error', async () => {
@@ -99,8 +99,7 @@ describe('test the todo list API', () => {
         test('DELETE /todo/:id should return a 204 no content', async () => {
             // create todo_item first
             const res1 = await request(app).post('/todos').send({description: "temp"});
-            let desc = res1.body.description;
-            let id = res1.body.todo_id;
+            let id = res1.body.todoid;
 
             // delete todo_ item
             const res2 = await request(app).delete(`/todo/${id}`).send();
@@ -145,7 +144,7 @@ describe('test the todo list API', () => {
         test('PUT /todo/:id should update a todo list and return 200 ok', async () => {
             // create todo_item first
             const res1 = await request(app).post('/todos').send({description: "temp"});
-            let id = res1.body.todo_id;
+            let id = res1.body.todoid;
 
             // get todo_ item
             const res = await request(app).put(`/todo/${id}`).send({description: "something new"});
@@ -153,7 +152,7 @@ describe('test the todo list API', () => {
             expect(res.body.description).toEqual("something new");
 
             // delete todo_ item
-            const res2 = await request(app).delete(`/todo/${id}`).send();
+            await request(app).delete(`/todo/${id}`).send();
         });
 
         test('PUT /todo/:id with id not found should return 404 not found', async () => {

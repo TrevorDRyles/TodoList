@@ -3,23 +3,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable('users', {
-            userid: {
+        await queryInterface.createTable('todos', {
+            todoid: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
-                autoIncrement: true,
+                autoIncrement: true
             },
-            // todolistid: {
-            //     type: Sequelize.INTEGER,
-            //     references: {
-            //         model: 'todolist',
-            //         key: 'todolistid',
-            //     },
-            //     onUpdate: 'CASCADE',
-            //     onDelete: 'CASCADE',
-            // },
-            username: Sequelize.STRING,
-            password: Sequelize.STRING,
+            description: Sequelize.STRING,
+            todolistid: {
+                type: Sequelize.INTEGER,
+                references: {
+                    model: 'todolist',
+                    key: 'todolistid',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false,
@@ -34,6 +33,6 @@ module.exports = {
     },
 
     async down(queryInterface) {
-        await queryInterface.dropTable('users');
+        await queryInterface.dropTable('todos');
     }
 };

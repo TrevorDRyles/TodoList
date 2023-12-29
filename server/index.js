@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 // const pool = require("./pool.js");
-const TodoListService = require("./services/TodoListService");
-const {postgres} = require("./config");
+// const {postgres} = require("./config");
 const setupTodoRoutes = require("./routes/todos");
 
 const setupServer = () => {
@@ -12,8 +11,7 @@ const setupServer = () => {
     // allows accessing req.body
     app.use(express.json());
     // declare service being used
-    const todoListService = new TodoListService(postgres.client);
-    app.use("/", setupTodoRoutes(todoListService));
+    app.use("/", setupTodoRoutes());
     return app;
 };
 const Server = setupServer();

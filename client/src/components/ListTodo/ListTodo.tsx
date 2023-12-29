@@ -73,7 +73,7 @@ function ListTodo() {
             if (response.ok) {
                 // update todos so that the index page reloads without the deleted item present
                 setTodos(todos.filter((t => {
-                    return t.todo_id !== id
+                    return t.todoid !== id
                 })));
             } else {
                 // Handle error scenarios
@@ -111,14 +111,14 @@ function ListTodo() {
     const content = todos.map((r, index) =>
         // returns a single element
         <tr key={index}>
-            <td>{r.todo_id}</td>
+            <td>{r.todoid}</td>
             <td>{r.description}</td>
             {/* Trigger/Open The Modal */}
-            <td className="editBtns" id={`edit${r.todo_id}`}>
-                <button onClick={handleEditButton(r.todo_id, r.description)}>Edit</button>
+            <td className="editBtns" id={`edit${r.todoid}`}>
+                <button onClick={handleEditButton(r.todoid, r.description)}>Edit</button>
             </td>
             <td>
-                <button onClick={handleDelete(r.todo_id)} id={`delete${r.todo_id}`}>Delete</button>
+                <button onClick={handleDelete(r.todoid)} id={`delete${r.todoid}`}>Delete</button>
             </td>
         </tr>
     );

@@ -1,10 +1,13 @@
-const Models = require("../models/sequelize");
+// const Models = require("../models/sequelize");
+require("../models/sequelize/todolist")
+require("../models/sequelize/todo")
+require("../models/sequelize/user")
 
 // the service provides actions for the TodoList like CRUD
 class TodoListService {
     constructor(sequelize) {
         // define the model if its not already defined
-        Models(sequelize);
+        // Models(sequelize);
         // define client so the service can connect to the database
         this.client = sequelize;
         // access list of models from this service
@@ -47,10 +50,10 @@ class TodoListService {
 
     async update(todoId, inputDescription, t) {
         const updatedTodoList = await this.models.todo.update(
-            { description: inputDescription },
+            {description: inputDescription},
             {
                 where: {
-                    todo_id: todoId,
+                    todoid: todoId,
                 },
                 returning: true,
                 transaction: t
@@ -60,11 +63,11 @@ class TodoListService {
 
     async delete(todoId, t) {
         const createdTodoList = await this.models.todo.destroy({
-            where: {
-                todo_id: todoId,
-            },
-            transaction: t
-        }
+                where: {
+                    todoid: todoId,
+                },
+                transaction: t
+            }
         );
         return createdTodoList;
     }
