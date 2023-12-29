@@ -1,12 +1,16 @@
 const request = require('supertest');
-require("../bin/start");
+const {models} = require("../bin/start");
 const TodoListService = require("../services/TodoListService");
 const app = require('../index');
-
+const postgres = require("../config");
+// global.models = models;
+// global.Todo = models.todo;
 describe('test the todo list API', () => {
-    describe('Get', () => {
 
+    describe('Get', () => {
         test('GET /todos should get all todos from the todo list and return 200', async () => {
+            // const todo1 = await Todo.findByPk(1, {include: 'todolist'});
+            // const todolist1 = todo1.todolist;
             const res = await request(app).get('/todos').send();
             expect(res.statusCode).toEqual(200);
             expect(res.body.length).toBeGreaterThanOrEqual(0);

@@ -11,6 +11,7 @@ module.exports = {
             idleTimeoutMillis: 30000, // Time a connection can be idle before being closed
             logging: console.log
         },
-        client: null
+        client: null,
+        models: null
     },
 }

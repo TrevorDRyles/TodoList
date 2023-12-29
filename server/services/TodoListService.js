@@ -1,11 +1,11 @@
-const Models = require("../models/sequelize");
+const Config = require("../config");
 // the service provides actions for the TodoList like CRUD
 class TodoListService {
     constructor(sequelize) {
         // define client so the service can connect to the database
         this.client = sequelize;
         // access list of models from this service
-        this.models = Models;
+        this.models = Config.postgres.models;
     }
 
 

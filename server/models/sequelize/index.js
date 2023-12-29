@@ -32,4 +32,4 @@ Object.keys(models).forEach((modelName) => {
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
-module.exports = models;
+module.exports = models// Load Sequelize models

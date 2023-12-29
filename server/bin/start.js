@@ -17,10 +17,9 @@ const postgres = connectToMyPostgres();
 
 // postgres client is the instance of Sequelize that is connected to Postgres
 config.postgres.client = postgres;
-
 // Load Sequelize models
+
 const models = require('../models/sequelize');
+config.postgres.models = models;
 
-module.exports = { sequelize: postgres, models };
-
-// module.exports = connectToMyPostgres;
+module.exports = { sequelize: postgres, models: models };
