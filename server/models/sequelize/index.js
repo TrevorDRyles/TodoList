@@ -4,6 +4,8 @@ const Sequelize = require('sequelize');
 const config = require('../../config/config.json'); // Your Sequelize configuration file
 const { database, username, password, host, dialect, port } = config.development; // or use process.env.NODE_ENV to dynamically select the environment
 
+// this file is responsible for loading all the models and associations so that they're available at a global level
+// from postgres.models
 const sequelize = new Sequelize(database, username, password, {
     host,
     dialect,

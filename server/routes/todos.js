@@ -9,6 +9,8 @@ const setupTodoRoutes = () => {
     // map from localhost/todos to all todo_list items
     router.get("/todos", async (req, res) => {
         try {
+            // the routes definition file uses service as opposed to models directly,
+            // as that is the role of the service class
             const todos = await todoListService.getAll();
             // return keyword not needed
             res.status(200);

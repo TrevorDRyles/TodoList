@@ -8,7 +8,6 @@ class TodoListService {
         this.models = Config.postgres.models;
     }
 
-
     async inTransaction(work) {
         // create a transaction to work in
         const t = await this.client.transaction();
@@ -25,6 +24,7 @@ class TodoListService {
 
     async create(inputDescription, t) {
         // model is singular because it is represents the attributes and actions for a single object
+        // service class uses models to perform CRUD
         const createdTodoList = await this.models.todo.create({
                 description: inputDescription
             },

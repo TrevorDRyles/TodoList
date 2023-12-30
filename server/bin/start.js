@@ -15,10 +15,12 @@ function connectToMyPostgres(sequelize = new Sequelize(config.postgres.options))
 
 const postgres = connectToMyPostgres();
 
+// load once at the beginning:
+
 // postgres client is the instance of Sequelize that is connected to Postgres
 config.postgres.client = postgres;
-// Load Sequelize models
 
+// sequelize models
 const models = require('../models/sequelize');
 config.postgres.models = models;
 
