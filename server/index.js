@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const setupTodoRoutes = require("./routes/todos");
+const setupSignupRoutes = require("./routes/signups");
 
 const setupServer = () => {
     const app = express();
@@ -10,6 +11,7 @@ const setupServer = () => {
     app.use(express.json());
     // declare service being used
     app.use("/", setupTodoRoutes());
+    app.use("/", setupSignupRoutes());
     return app;
 };
 const Server = setupServer();
