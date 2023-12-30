@@ -3,10 +3,10 @@ const router = express.Router();
 const {postgres} = require("../config/index");
 const UserService = require("../services/UserService");
 
-const SetupSignupRoutes = () => {
+const SetupAccountRoutes = () => {
     // map from localhost/todos to all todo_list items
     const userService = new UserService(postgres.client);
-    // map from localhost/todos to all todo_list items
+
     router.post("/signup", async (req, res) => {
         try {
             let result;
@@ -27,7 +27,29 @@ const SetupSignupRoutes = () => {
             res.json({error: 'Server error'});
         }
     });
+
+    router.post("/signin", async (req, res) => {
+        try {
+            let result;
+            let {username, password} = req.body;
+            await userService.inTransaction(async (t) => {
+                result = await userService.signIn(username, password, t);
+            });
+            if (result === undefined) {
+                res.status(500);
+                res.json({error: "Server error -- couldn't create transaction"});
+            } else {
+                res.status(200);
+                res.json({});
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500);
+            res.json({error: 'Server error'});
+        }
+    });
+
     return router;
 }
 
-module.exports = SetupSignupRoutes;
+module.exports = SetupAccountRoutes;

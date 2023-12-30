@@ -3,45 +3,44 @@ import {useRef, useState} from 'react';
 // import styles from './TodoAdd.module.css';
 import {useNavigate} from 'react-router-dom';
 
-const SignUp = () => {
+const SignIn = () => {
     const navigate = useNavigate();
     // refs are used to reference the value of an element
-    let username = useRef(null);
-    let [password, setPassword] = useState('');
-    let [passwordConfirm, setPasswordConfirm] = useState('');
-    let [statusMessage, setStatusMessage] = useState('');
-    const submitButtonRef = useRef(null);
+    const username = useRef(null);
+    const password = useRef(null);
+    const [statusMessage, setStatusMessage] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         let usernameValue = username.current.value;
+        let passwordValue = password.current.value;
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 username: usernameValue,
-                password: password,
-                passwordConfirm: passwordConfirm
+                password: passwordValue,
             })
         };
         try {
-            let response = await fetch('http://localhost:5000/signup', requestOptions);
+            let response = await fetch('http://localhost:5000/signin', requestOptions);
             // Handle the response here if needed
             if (!response.ok) {
                 // Handle error scenarios
-                setStatusMessage("Failed to signup:" + response.statusText);
-            }else{
+                setStatusMessage("Failed to SignIn: " + response.statusText);
+            } else {
+                console.log('here');
                 navigate('/home', {state: {username: usernameValue}});
             }
         } catch (error) {
             // Handle fetch errors (e.g., network issues)
-            console.error('Error during signup:', error.message);
+            console.error('Error during SignIn:', error.message);
         }
     }
 
     return (
         <div>
-            <h1>Sign Up</h1>
+            <h1>Sign In</h1>
             <h2 id={"statusMessage"}>{statusMessage}</h2>
             <form onSubmit={handleSubmit}>
                 <div className={"row mt-5 ml-5"}>
@@ -52,23 +51,17 @@ const SignUp = () => {
                     </div>
                     <div className="form-group col-7">
                         <label htmlFor="password">Password:</label>
-                        <input onChange={e => setPassword(e.target.value)} placeholder="password" type="password"
-                               className="form-control"
+                        <input placeholder="password" ref={password} type="password" className="form-control"
                                id="password"></input>
                     </div>
-                    <div className="form-group col-7">
-                        <label htmlFor="passwordConfirm">Password Confirm:</label>
-                        <input onChange={e => setPasswordConfirm(e.target.value)} placeholder="password" type="password"
-                               className="form-control"
-                               id="passwordConfirm"></input>
-                    </div>
                     <div className={"col-12"}></div>
-                    <div className="btn btn-secondary" onClick={() => navigate('/signin')}>Already have an account? Sign
-                        In
+                    <div className="ml-5 btn btn-secondary" onClick={() => alert('not implemented')}>Forgot your
+                        password?
                     </div>
-                    <button disabled={password !== passwordConfirm} type="submit"
-                            className="ml-5 btn btn-primary">Submit
-                    </button>
+                    <div className="ml-5 btn btn-secondary" onClick={() => navigate('/signup')}>Don't have an account?
+                        Sign Up
+                    </div>
+                    <button type="submit" className="ml-5 btn btn-primary">Submit</button>
                 </div>
             </form>
         </div>
@@ -76,4 +69,4 @@ const SignUp = () => {
 
 }
 
-export default SignUp;
+export default SignIn;

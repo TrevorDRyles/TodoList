@@ -3,13 +3,25 @@ import Index from "../pages/Index/Index";
 import SignUp from "../pages/Signup/Signup";
 import React from "react";
 import UserLanding from "../pages/UserLanding/UserLanding";
+import SignIn from "../pages/Signin/Signin";
+import {PrivateRoute} from "../auth/PrivateRoute";
+
 const AppRouter = () => {
     return(
     <BrowserRouter>
         <Routes>
-            <Route path="/" element={<Index/>}/>
+            {/*private route*/}
+            <Route path="/"
+                   element={
+                       <PrivateRoute>
+                           <Index/>
+                       </PrivateRoute>
+                   }
+            />
+            {/*<PrivateRoute element={<Index/>} path="/"></PrivateRoute>*/}
             <Route path={"/signup"} element={<SignUp/>}/>
             <Route path={"/home"} element={<UserLanding/>}/>
+            <Route path={"/signin"} element={<SignIn/>}/>
             {/*<Route path="/about" element={<About />}>*/}
             {/*    <Route*/}
             {/*        path="history"*/}

@@ -35,6 +35,11 @@ class TodoListService {
         return createdUser;
     }
 
+    async signIn(username, password, t) {
+        // perform sign in logic
+        return {};
+    }
+
     async get(id) {
         const obtainedTodoList = await this.models.todo.findByPk(id);
         return obtainedTodoList;

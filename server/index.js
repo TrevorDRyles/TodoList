@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const setupTodoRoutes = require("./routes/todos");
-const setupSignupRoutes = require("./routes/signups");
+const setupSignupRoutes = require("./routes/accounts");
 
 const setupServer = () => {
     const app = express();
