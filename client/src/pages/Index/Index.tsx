@@ -1,9 +1,9 @@
 import React from "react";
 import styles from "./index.module.css";
-import TodoAdd from "../TodoAdd/TodoAdd";
-import ListTodo from "../ListTodo/ListTodo";
+import TodoAdd from "../../components/TodoAdd/TodoAdd";
+import ListTodo from "../../components/ListTodo/ListTodo";
 
-function IndexComponent() {
+function Index() {
     return (
         <React.StrictMode>
             <div id={styles.header}>
@@ -17,5 +17,5 @@ function IndexComponent() {
     );
 }
 
-export default IndexComponent;
+export default Index;
 

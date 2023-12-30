@@ -1,15 +1,18 @@
 import * as React from 'react';
 import {Fragment, useRef, useState} from "react";
 // import styles from './TodoAdd.module.css';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+    const navigate = useNavigate();
     // refs are used to reference the value of an element
     const username = useRef(null);
     const password = useRef(null);
     const passwordConfirm = useRef(null);
     const [statusMessage, setStatusMessage] = useState('');
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         let usernameValue = username.current.value;
         let passwordValue = password.current.value;
         let passwordConfirmValue = passwordConfirm.current.value;
@@ -29,7 +32,8 @@ const SignUp = () => {
                 // Handle error scenarios
                 setStatusMessage("Failed to signup:" + response.statusText);
             }else{
-                alert("user created");
+                localStorage.setItem("user", usernameValue);
+                navigate('/home', {state: {username: usernameValue}});
             }
         } catch (error) {
             // Handle fetch errors (e.g., network issues)
