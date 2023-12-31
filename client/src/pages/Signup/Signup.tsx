@@ -2,15 +2,16 @@ import * as React from 'react';
 import {useRef, useState} from 'react';
 // import styles from './TodoAdd.module.css';
 import {useNavigate} from 'react-router-dom';
+import {useToken} from "../../auth/useToken";
 
 const SignUp = () => {
+    const [token, setToken] = useToken();
     const navigate = useNavigate();
     // refs are used to reference the value of an element
     let username = useRef(null);
     let [password, setPassword] = useState('');
     let [passwordConfirm, setPasswordConfirm] = useState('');
     let [statusMessage, setStatusMessage] = useState('');
-    const submitButtonRef = useRef(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,6 +31,9 @@ const SignUp = () => {
                 // Handle error scenarios
                 setStatusMessage("Failed to signup:" + response.statusText);
             }else{
+                const {token} = await response.json();
+                // @ts-ignore
+                setToken(token);
                 navigate('/home', {state: {username: usernameValue}});
             }
         } catch (error) {

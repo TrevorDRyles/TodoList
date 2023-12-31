@@ -1,7 +1,8 @@
 import * as React from 'react';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from 'react';
 import Modal from 'react-modal'
 import styles from './ListTodo.module.css'
+import {useToken} from "../../auth/useToken";
 // make console happy
 Modal.setAppElement('#root');
 
@@ -15,6 +16,7 @@ function ListTodo() {
     const contentRef = useRef(null);
     let [idVal, setIdVal] = useState('');
     let [contentVal, setContentVal] = useState('');
+    const [token, setToken] = useToken();
 
     // Style the modal content (customize as needed)
     const modalStyle = {
@@ -35,13 +37,19 @@ function ListTodo() {
     useEffect(() => {
         const getContentFromEffect = async () => {
             try {
-                const response = await fetch("http://localhost:5000/todos");
+                const response = await fetch("http://localhost:5000/todos",
+                    {
+                        headers: {Authorization: `Bearer ${token}`}
+                    }
+                );
 
                 if (response.ok) {
                     let contents = await response.json();
                     // on page load, set contents equal to the content we've fetched
                     // set loaded equal to true so that the content will be displayed when loaded
-                    setTodos(contents);
+                    setTodos(contents.todos);
+                    // @ts-ignore
+                    setToken(contents.token);
                     setLoaded(true);
                 } else {
                     console.log("error");

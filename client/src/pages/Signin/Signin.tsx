@@ -2,6 +2,7 @@ import * as React from 'react';
 import {useRef, useState} from 'react';
 // import styles from './TodoAdd.module.css';
 import {useNavigate} from 'react-router-dom';
+import {useToken} from "../../auth/useToken"
 
 const SignIn = () => {
     const navigate = useNavigate();
@@ -9,7 +10,7 @@ const SignIn = () => {
     const username = useRef(null);
     const password = useRef(null);
     const [statusMessage, setStatusMessage] = useState('');
-
+    const [token, setToken] = useToken();
     const handleSubmit = async (e) => {
         e.preventDefault();
         let usernameValue = username.current.value;
@@ -29,7 +30,9 @@ const SignIn = () => {
                 // Handle error scenarios
                 setStatusMessage("Failed to SignIn: " + response.statusText);
             } else {
-                console.log('here');
+                const {token} = await response.json();
+                // @ts-ignore
+                setToken(token);
                 navigate('/home', {state: {username: usernameValue}});
             }
         } catch (error) {
@@ -55,9 +58,9 @@ const SignIn = () => {
                                id="password"></input>
                     </div>
                     <div className={"col-12"}></div>
-                    <div className="ml-5 btn btn-secondary" onClick={() => alert('not implemented')}>Forgot your
-                        password?
-                    </div>
+                    {/*<div className="ml-5 btn btn-secondary" onClick={() => alert('not implemented')}>Forgot your*/}
+                    {/*    password?*/}
+                    {/*</div>*/}
                     <div className="ml-5 btn btn-secondary" onClick={() => navigate('/signup')}>Don't have an account?
                         Sign Up
                     </div>

@@ -4,13 +4,17 @@ const TodoListService = require("../services/TodoListService");
 const app = require('../index');
 const postgres = require("../config");
 // global.models = models;
-// global.Todo = models.todo;
+// global.User = models.user;
+// global.TodoList = models.todolist;
 describe('test the todo list API', () => {
 
     describe('Get', () => {
         test('GET /todos should get all todos from the todo list and return 200', async () => {
-            // const todo1 = await Todo.findByPk(1, {include: 'todolist'});
-            // const todolist1 = todo1.todolist;
+            // const todo = await User.findByPk(999, {include: 'todolist'});
+            // const todolist = todo.todolist;
+            // const todo1 = await TodoList.findByPk(999, {include: 'todos'});
+
+
             const res = await request(app).get('/todos').send();
             expect(res.statusCode).toEqual(200);
             expect(res.body.length).toBeGreaterThanOrEqual(0);
