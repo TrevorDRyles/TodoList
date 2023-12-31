@@ -21,7 +21,8 @@ const postgres = connectToMyPostgres();
 config.postgres.client = postgres;
 
 // sequelize models
-const models = require('../models/sequelize');
+const {models} = require('../models/sequelize');
 config.postgres.models = models;
 
-module.exports = { sequelize: postgres, models: models };
+// connectToMyPostgres is exported for testing purposes
+module.exports = {sequelize: postgres, models: models, connectToMyPostgres: connectToMyPostgres};

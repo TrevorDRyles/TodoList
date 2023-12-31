@@ -1,6 +1,6 @@
 const Config = require("../config");
-// the service provides actions for the TodoList like CRUD
-class TodoListService {
+
+class UserService {
     constructor(sequelize) {
         // define client so the service can connect to the database
         this.client = sequelize;
@@ -51,35 +51,7 @@ class TodoListService {
         return obtainedUser;
     }
 
-    async getAll() {
-        const obtainedTodoLists = await this.models.todo.findAll();
-        return obtainedTodoLists;
-    }
-
-    async update(todoId, inputDescription, t) {
-        const updatedTodoList = await this.models.todo.update(
-            {description: inputDescription},
-            {
-                where: {
-                    todoid: todoId,
-                },
-                returning: true,
-                transaction: t
-            });
-        return updatedTodoList;
-    }
-
-    async delete(todoId, t) {
-        const createdTodoList = await this.models.todo.destroy({
-                where: {
-                    todoid: todoId,
-                },
-                transaction: t
-            }
-        );
-        return createdTodoList;
-    }
 
 }
 
-module.exports = TodoListService;
+module.exports = UserService;

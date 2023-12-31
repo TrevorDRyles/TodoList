@@ -9,6 +9,7 @@ const setupTodoRoutes = () => {
     const todoService = new TodoService(postgres.client);
     // map from localhost/todos to all todo_list items
 
+    // Get all todos
     router.get("/todos", async (req, res) => {
         const {authorization} = req.headers;
         // see if there are authorization headers present
@@ -59,6 +60,7 @@ const setupTodoRoutes = () => {
         }
     });
 
+    // get a single todo
     router.get("/todo/:id", async (req, res) => {
         try {
             const id = req.params.id;
@@ -77,6 +79,7 @@ const setupTodoRoutes = () => {
         }
     });
 
+    // create a todo
     router.post("/todos", async (req, res) => {
         try {
             const {authorization} = req.headers;
@@ -122,6 +125,7 @@ const setupTodoRoutes = () => {
         }
     });
 
+    // delete a todo
     router.delete("/todo/:id", async (req, res) => {
         const id = req.params.id;
         let result;
@@ -148,6 +152,7 @@ const setupTodoRoutes = () => {
         }
     });
 
+    // update a todo
     router.put("/todo/:id", async (req, res) => {
         try {
             const desc = req.body.description;

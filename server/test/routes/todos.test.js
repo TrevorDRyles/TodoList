@@ -1,20 +1,18 @@
 const request = require('supertest');
-require("../bin/start");
-const TodoService = require("../services/TodoService");
-const app = require('../index');
+require("../../bin/start");
+const TodoService = require("../../services/TodoService");
+const app = require('../../index');
 // DONT USE THESE HERE! these are for service classes ONLY
 // global.models = models;
 // global.User = models.user;
 // global.TodoList = models.todolist;
-describe('test the todo list API', () => {
+// const todo = await User.findByPk(999, {include: 'todolist'});
+// const todolist = todo.todolist;
+// const todo1 = await Todo.findByPk(999, {include: 'todos'});
+describe('test the todos API', () => {
 
     describe('Get', () => {
         test('GET /todos should get all todos from the todo list and return 200', async () => {
-            // const todo = await User.findByPk(999, {include: 'todolist'});
-            // const todolist = todo.todolist;
-            // const todo1 = await Todo.findByPk(999, {include: 'todos'});
-
-
             const res = await request(app).get('/todos').send();
             expect(res.statusCode).toEqual(200);
             expect(res.body.length).toBeGreaterThanOrEqual(0);

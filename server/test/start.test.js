@@ -1,12 +1,12 @@
-const connectToPostgres = require("../bin/start");
+const {connectToMyPostgres} = require("../bin/start");
 
 describe('test the connectToMyPostgres function', () => {
 
     test('connectToMyPostgres without error should work', async() => {
-        await connectToPostgres();
+        await connectToMyPostgres();
     });
 
-    test('connectToMyPostgres without error should work', async() => {
+    test('connectToMyPostgres with error should work', async () => {
         const sequelize = {
             authenticate: jest.fn().mockRejectedValueOnce(new Error('Connection failed')),
         };
@@ -14,7 +14,7 @@ describe('test the connectToMyPostgres function', () => {
             // Assert that process.exit was called with the expected exit code
             expect(code).toBe(1);
         });
-        await connectToPostgres(sequelize);
+        await connectToMyPostgres(sequelize);
     });
 
 });

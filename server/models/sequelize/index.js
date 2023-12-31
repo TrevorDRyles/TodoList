@@ -25,13 +25,16 @@ fs.readdirSync(__dirname)
     });
 
 // Define associations
-Object.keys(models).forEach((modelName) => {
-    if (models[modelName].associate) {
-        models[modelName].associate(models);
-    }
-});
+const associateModels = (modelsArg) => {
+    Object.keys(modelsArg).forEach((modelName) => {
+        if (modelsArg[modelName].associate) {
+            modelsArg[modelName].associate(modelsArg);
+        }
+    });
+}
+associateModels(models);
 
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
-module.exports = models// Load Sequelize models
+module.exports = {models, associateModels}// Load Sequelize models
