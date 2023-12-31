@@ -28,8 +28,7 @@ class TodoListService {
         // service class uses models to perform CRUD
         const createdUser = await this.models.user.create({
                 username: username,
-                password: password,
-                passwordConfirm: passwordConfirm
+                password: password
             },
             {transaction: t});
         return createdUser;
@@ -40,9 +39,13 @@ class TodoListService {
         return {};
     }
 
-    async get(id) {
-        const obtainedTodoList = await this.models.todo.findByPk(id);
-        return obtainedTodoList;
+    async getByUsername(username) {
+        const obtainedUser = await this.models.user.findOne({
+            where: {
+                username: username
+            }
+        });
+        return obtainedUser;
     }
 
     async getAll() {

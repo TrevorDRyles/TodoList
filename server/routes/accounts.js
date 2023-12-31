@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const {postgres} = require("../config/index");
 const UserService = require("../services/UserService");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const SetupAccountRoutes = () => {
     // map from localhost/todos to all todo_list items
@@ -10,16 +12,40 @@ const SetupAccountRoutes = () => {
     router.post("/signup", async (req, res) => {
         try {
             let result;
-            let {username, password, passwordConfirm} = req.body;
+            const {username, password} = req.body;
+            const user = await userService.getByUsername(username);
+            if (user) {
+                // user exists already
+                res.status(409);
+                res.json({error: "user already exists"})
+                return;
+            }
+            // encrypt password
+            const passwordHash = await bcrypt.hash(password, 10);
+            // create user
             await userService.inTransaction(async (t) => {
-                result = await userService.create(username, password, passwordConfirm, t);
+                result = await userService.create(username, passwordHash, t);
             });
             if (result === undefined) {
                 res.status(500);
                 res.json({error: "Server error -- couldn't create transaction"});
             } else {
-                res.status(201);
-                res.json(result.dataValues);
+                jwt.sign({
+                        id: result.userid,
+                        username: result.username
+                    },
+                    process.env.JWT_SECRET,
+                    {
+                        expiresIn: '2d'
+                    },
+                    (err, token) => {
+                        if (err) {
+                            return res.status(500).send(err);
+                        }
+                        res.status(201);
+                        res.json({token});
+                    }
+                );
             }
         } catch (err) {
             console.log(err);
@@ -30,17 +56,36 @@ const SetupAccountRoutes = () => {
 
     router.post("/signin", async (req, res) => {
         try {
-            let result;
-            let {username, password} = req.body;
-            await userService.inTransaction(async (t) => {
-                result = await userService.signIn(username, password, t);
-            });
-            if (result === undefined) {
-                res.status(500);
-                res.json({error: "Server error -- couldn't create transaction"});
+            const {username, password} = req.body;
+            const user = await userService.getByUsername(username);
+            if (!user) {
+                // user does not exist
+                res.sendStatus(401);
+            }
+            const usernameFound = user.username;
+            const passwordFound = user.password;
+            // encrypt password
+            const isCorrect = await bcrypt.compare(password, passwordFound);
+            if (isCorrect) {
+                jwt.sign({
+                        id: user.userid,
+                        username: usernameFound,
+                        password: passwordFound
+                    },
+                    process.env.JWT_SECRET,
+                    {
+                        expiresIn: '2d'
+                    },
+                    (err, token) => {
+                        if (err) {
+                            return res.status(500).send(err);
+                        }
+                        res.status(201);
+                        res.json({token});
+                    }
+                );
             } else {
-                res.status(200);
-                res.json({});
+                res.sendStatus(401);
             }
         } catch (err) {
             console.log(err);

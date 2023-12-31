@@ -20,8 +20,7 @@ const SignUp = () => {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 username: usernameValue,
-                password: password,
-                passwordConfirm: passwordConfirm
+                password: password
             })
         };
         try {
