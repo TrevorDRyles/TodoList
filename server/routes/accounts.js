@@ -68,7 +68,7 @@ const SetupAccountRoutes = () => {
             const user = await userService.getByUsername(username);
             if (!user) {
                 // user does not exist
-                res.sendStatus(401);
+                return res.sendStatus(401);
             }
             const usernameFound = user.username;
             const passwordFound = user.password;
@@ -93,7 +93,7 @@ const SetupAccountRoutes = () => {
                     }
                 );
             } else {
-                res.sendStatus(401);
+                return res.sendStatus(401);
             }
         } catch (err) {
             console.log(err);
