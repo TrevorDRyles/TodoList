@@ -10,7 +10,7 @@ const SignIn = () => {
     const username = useRef(null);
     const password = useRef(null);
     const [statusMessage, setStatusMessage] = useState('');
-    const [token, setToken] = useToken();
+    const [, setToken] = useToken();
     const handleSubmit = async (e) => {
         e.preventDefault();
         let usernameValue = username.current.value;
@@ -33,7 +33,7 @@ const SignIn = () => {
                 const {token} = await response.json();
                 // @ts-ignore
                 setToken(token);
-                navigate('/home', {state: {username: usernameValue}});
+                navigate('/');
             }
         } catch (error) {
             // Handle fetch errors (e.g., network issues)

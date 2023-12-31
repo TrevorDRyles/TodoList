@@ -1,8 +1,8 @@
 const request = require('supertest');
-const {models} = require("../bin/start");
-const TodoListService = require("../services/TodoListService");
+require("../bin/start");
+const TodoService = require("../services/TodoService");
 const app = require('../index');
-const postgres = require("../config");
+// DONT USE THESE HERE! these are for service classes ONLY
 // global.models = models;
 // global.User = models.user;
 // global.TodoList = models.todolist;
@@ -12,7 +12,7 @@ describe('test the todo list API', () => {
         test('GET /todos should get all todos from the todo list and return 200', async () => {
             // const todo = await User.findByPk(999, {include: 'todolist'});
             // const todolist = todo.todolist;
-            // const todo1 = await TodoList.findByPk(999, {include: 'todos'});
+            // const todo1 = await Todo.findByPk(999, {include: 'todos'});
 
 
             const res = await request(app).get('/todos').send();
@@ -21,7 +21,7 @@ describe('test the todo list API', () => {
         });
 
         test('GET /todos with an error should return error code 500', async () => {
-            jest.spyOn(TodoListService.prototype, 'getAll')
+            jest.spyOn(TodoService.prototype, 'getAll')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Server error");
                 });
@@ -55,7 +55,7 @@ describe('test the todo list API', () => {
         });
 
         test('GET /todo/:id with an error in transaction should return 500 server error', async () => {
-            jest.spyOn(TodoListService.prototype, 'get')
+            jest.spyOn(TodoService.prototype, 'get')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Server error")
                 });
@@ -79,7 +79,7 @@ describe('test the todo list API', () => {
 
         test('POST /todos with an error in create should return error code 500 server error', async () => {
             let desc = 'Server error';
-            jest.spyOn(TodoListService.prototype, 'create')
+            jest.spyOn(TodoService.prototype, 'create')
                 .mockRejectedValueOnce(() => {
                     throw new Error(desc)
                 });
@@ -90,7 +90,7 @@ describe('test the todo list API', () => {
 
         test('POST /todos with an error in inTransaction should return error code 500 server error', async () => {
             let desc = 'Server error';
-            jest.spyOn(TodoListService.prototype, 'inTransaction')
+            jest.spyOn(TodoService.prototype, 'inTransaction')
                 .mockRejectedValueOnce(() => {
                     throw new Error(desc)
                 });
@@ -122,7 +122,7 @@ describe('test the todo list API', () => {
         });
 
         test('DELETE /todo/:id with server error should return 500 server error', async () => {
-            jest.spyOn(TodoListService.prototype, 'inTransaction')
+            jest.spyOn(TodoService.prototype, 'inTransaction')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Server error");
                 });
@@ -133,7 +133,7 @@ describe('test the todo list API', () => {
         });
 
         test('DELETE /todo/:id with transaction error should return 500 server error', async () => {
-            jest.spyOn(TodoListService.prototype, 'delete')
+            jest.spyOn(TodoService.prototype, 'delete')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Error in transaction");
                 });
@@ -170,7 +170,7 @@ describe('test the todo list API', () => {
         });
 
         test('PUT /todo/:id with id transaction not complete should return 500 server error', async () => {
-            jest.spyOn(TodoListService.prototype, 'update')
+            jest.spyOn(TodoService.prototype, 'update')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Server error -- transaction not completed");
                 });
@@ -181,7 +181,7 @@ describe('test the todo list API', () => {
         });
 
         test('PUT /todo/:id with id transaction not complete should return 500 server error', async () => {
-            jest.spyOn(TodoListService.prototype, 'inTransaction')
+            jest.spyOn(TodoService.prototype, 'inTransaction')
                 .mockRejectedValueOnce(() => {
                     throw new Error("Server error -- transaction not completed");
                 });

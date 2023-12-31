@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {useToken} from "../../auth/useToken";
 
 const SignUp = () => {
-    const [token, setToken] = useToken();
+    const [, setToken] = useToken();
     const navigate = useNavigate();
     // refs are used to reference the value of an element
     let username = useRef(null);
@@ -34,7 +34,7 @@ const SignUp = () => {
                 const {token} = await response.json();
                 // @ts-ignore
                 setToken(token);
-                navigate('/home', {state: {username: usernameValue}});
+                navigate('/');
             }
         } catch (error) {
             // Handle fetch errors (e.g., network issues)

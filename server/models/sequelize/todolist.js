@@ -6,7 +6,8 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         // todolist has the foreign key because it belongs to use
-        userid: DataTypes.INTEGER
+        userid: DataTypes.INTEGER,
+        username: DataTypes.STRING
     });
     TodoList.associate = (models) => {
         TodoList.hasMany(models.todo, {foreignKey: "todolistid"});

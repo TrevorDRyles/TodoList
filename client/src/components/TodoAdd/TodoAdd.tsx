@@ -1,17 +1,22 @@
 import * as React from 'react';
-import {useRef} from "react";
+import {useRef} from 'react';
 import styles from './TodoAdd.module.css';
+import {useToken} from "../../auth/useToken";
 
 function TodoAdd() {
     // refs are used to reference the value of an element
     const listAdd = useRef(null);
+    const [token] = useToken();
     // async function because there's a fetch in it
     // this function will not block other code's execution
     const handleSubmit = async () => {
         let descript = listAdd.current.value;
         const requestOptions = {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({description: descript})
         };
         try {

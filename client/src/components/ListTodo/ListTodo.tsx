@@ -3,6 +3,7 @@ import {useEffect, useRef, useState} from 'react';
 import Modal from 'react-modal'
 import styles from './ListTodo.module.css'
 import {useToken} from "../../auth/useToken";
+import {useNavigate} from "react-router-dom";
 // make console happy
 Modal.setAppElement('#root');
 
@@ -16,7 +17,8 @@ function ListTodo() {
     const contentRef = useRef(null);
     let [idVal, setIdVal] = useState('');
     let [contentVal, setContentVal] = useState('');
-    const [token, setToken] = useToken();
+    const [token] = useToken();
+    const navigate = useNavigate();
 
     // Style the modal content (customize as needed)
     const modalStyle = {
@@ -37,9 +39,14 @@ function ListTodo() {
     useEffect(() => {
         const getContentFromEffect = async () => {
             try {
+                // include JWT inside authorization headers in request for todos
                 const response = await fetch("http://localhost:5000/todos",
                     {
-                        headers: {Authorization: `Bearer ${token}`}
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            // ContentType: 'application/json'
+                        },
+                        // body: JSON.stringify({id: id, username: username})
                     }
                 );
 
@@ -47,9 +54,9 @@ function ListTodo() {
                     let contents = await response.json();
                     // on page load, set contents equal to the content we've fetched
                     // set loaded equal to true so that the content will be displayed when loaded
-                    setTodos(contents.todos);
+                    setTodos(contents);
                     // @ts-ignore
-                    setToken(contents.token);
+                    // setToken(contents.token);
                     setLoaded(true);
                 } else {
                     console.log("error");
@@ -92,6 +99,11 @@ function ListTodo() {
             console.error('Error during fetch:', error.message);
         }
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        navigate("/signin");
+    }
 
     // process update
     const handleEdit = async () => {
@@ -174,6 +186,7 @@ function ListTodo() {
                     </tbody>
                 </table>
             </div>
+            <button onClick={handleLogout}>Logout</button>
         </div>
     );
 }

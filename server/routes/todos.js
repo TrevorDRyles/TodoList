@@ -1,69 +1,68 @@
 const express = require("express");
 const router = express.Router();
 const {postgres} = require("../config/index");
-const TodoListService = require("../services/TodoListService");
+const TodoService = require("../services/TodoService");
 const jwt = require("jsonwebtoken");
 
 const setupTodoRoutes = () => {
     // map from localhost/todos to all todo_list items
-    const todoListService = new TodoListService(postgres.client);
+    const todoService = new TodoService(postgres.client);
     // map from localhost/todos to all todo_list items
 
     router.get("/todos", async (req, res) => {
         const {authorization} = req.headers;
+        // see if there are authorization headers present
         if (!authorization) {
             return res.status(401).json({error: "No authorization header sent"});
         }
-        // payload is the authorization token
+        // payload is the JWT
         const token = authorization.split(' ')[1];
-        let id;
-        let username;
         // TODO add this to all routes, and confirm that the decoded jwt ID is equal to the ID of the tasklist's user they are trying to edit
+        let jwtId;
+        // verify JWT present
         jwt.verify(
             token,
             process.env.JWT_SECRET,
             async (err, decoded) => {
                 if (err)
                     return res.status(401).json({error: 'Unable to verify token'});
-
-                id = decoded.id;
-                username = decoded.username;
-                // if (id !== userId)
-                //     return res.status(403).json({error: "Not allowed to update that user's data"});
+                jwtId = decoded.id;
+                // jwtUsername = decoded.username;
+                // if (jwtId !== reqId && jwtUsername !== reqUsername)
+                //     return res.status(403).json({error: "Not allowed to view that user's data"});
             }
         )
         try {
             // the routes definition file uses service as opposed to models directly,
             // as that is the role of the service class
-            const todos = await todoListService.getAll();
-            jwt.sign({
-                    // id, email, isVerified
-                    id: id,
-                    username: username
-                },
-                process.env.JWT_SECRET,
-                {expiresIn: '2d'},
-                (err, token) => {
-                    if (err) {
-                        return res.status(200).json(err);
-                    }
-                    res.status(200).json({token: token, todos: todos});
-                }
-            )
+            const todos = await todoService.getTodosForUser(jwtId);
+            // jwt.sign({
+            //         // id, email, isVerified
+            //         id: id,
+            //         username: username
+            //     },
+            //     process.env.JWT_SECRET,
+            //     {expiresIn: '2d'},
+            //     (err, token) => {
+            //         if (err) {
+            //             return res.status(200).json(err);
+            //         }
+            //         res.status(200).json({token: token, todos: todos});
+            //     }
+            // )
             // return keyword not needed
-            // res.status(200);
-            // res.json(todos);
+            res.status(200);
+            res.json(todos);
         } catch (err) {
             console.log(err);
-            res.status(500);
-            res.json({error: 'Server error'});
+            res.status(500).json({error: 'Server error'});
         }
     });
 
     router.get("/todo/:id", async (req, res) => {
         try {
             const id = req.params.id;
-            const todo = await todoListService.get(id);
+            const todo = await todoService.get(id);
             if (todo == null) {
                 res.status(404);
                 res.json({error: 'Not Found'});
@@ -80,11 +79,34 @@ const setupTodoRoutes = () => {
 
     router.post("/todos", async (req, res) => {
         try {
+            const {authorization} = req.headers;
+            // see if there are authorization headers present
+            if (!authorization) {
+                return res.status(401).json({error: "No authorization header sent"});
+            }
+            // payload is the JWT
+            const token = authorization.split(' ')[1];
+            // TODO add this to all routes, and confirm that the decoded jwt ID is equal to the ID of the tasklist's user they are trying to edit
+            let jwtId;
+            let jwtUsername;
+            // verify JWT present
+            jwt.verify(
+                token,
+                process.env.JWT_SECRET,
+                async (err, decoded) => {
+                    if (err)
+                        return res.status(401).json({error: 'Unable to verify token'});
+                    jwtId = decoded.id;
+                    jwtUsername = decoded.username;
+                    // if (jwtId !== reqId && jwtUsername !== reqUsername)
+                    //     return res.status(403).json({error: "Not allowed to view that user's data"});
+                }
+            )
             let result;
             let {description} = req.body;
-            // create a transaction in which the callback is a function that creates a new todolist
-            await todoListService.inTransaction(async (t) => {
-                result = await todoListService.create(description, t);
+            // create a transaction in which the callback is a function that creates a new todo
+            await todoService.inTransaction(async (t) => {
+                result = await todoService.create(jwtUsername, description, t);
             });
             if (result === undefined) {
                 res.status(500);
@@ -104,8 +126,8 @@ const setupTodoRoutes = () => {
         const id = req.params.id;
         let result;
         try {
-            await todoListService.inTransaction(async (t) => {
-                result = await todoListService.delete(id, t);
+            await todoService.inTransaction(async (t) => {
+                result = await todoService.delete(id, t);
             });
             // const todo_ = await pool.query("DELETE FROM todos WHERE todo_id=$1 RETURNING *", [id]);
             if (result === 0) {
@@ -131,8 +153,8 @@ const setupTodoRoutes = () => {
             const desc = req.body.description;
             const id = req.params.id;
             let result;
-            await todoListService.inTransaction(async (t) => {
-                result = await todoListService.update(id, desc, t);
+            await todoService.inTransaction(async (t) => {
+                result = await todoService.update(id, desc, t);
             });
             if (result == null) {
                 res.status(500);

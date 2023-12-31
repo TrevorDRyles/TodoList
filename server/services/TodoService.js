@@ -1,11 +1,11 @@
 const Config = require("../config");
-// the service provides actions for the TodoList like CRUD
-class TodoListService {
+
+// the service provides actions for the Todo like CRUD
+class TodoService {
     constructor(sequelize) {
         // define client so the service can connect to the database
         this.client = sequelize;
         // access list of models from this service
-        // TODO select only relevant ones
         this.models = Config.postgres.models;
     }
 
@@ -23,41 +23,49 @@ class TodoListService {
         }
     }
 
-    async create(username, password, passwordConfirm, t) {
+    async create(username, inputDescription, t) {
         // model is singular because it is represents the attributes and actions for a single object
         // service class uses models to perform CRUD
-        const createdUser = await this.models.user.create(
-            {
-                username: username,
-                password: password
-            },
-            {transaction: t});
-
-        const createdTodoList = await this.models.todolist.create(
-            {
-                userid: createdUser.userid,
-                username: username
-            }
-        )
-        return createdUser;
-    }
-
-    async getByUsername(username) {
-        const obtainedUser = await this.models.user.findOne({
+        const todolist = await this.models.todolist.findOne({
             where: {
                 username: username
             }
         });
-        return obtainedUser;
+
+        const createdTodo = await this.models.todo.create({
+                description: inputDescription,
+                todolistid: todolist.todolistid
+            },
+            {transaction: t});
+        return createdTodo;
+    }
+
+    async get(id) {
+        const obtainedTodo = await this.models.todo.findByPk(id);
+        return obtainedTodo;
     }
 
     async getAll() {
-        const obtainedTodoLists = await this.models.todo.findAll();
-        return obtainedTodoLists;
+        const obtainedTodos = await this.models.todo.findAll();
+        return obtainedTodos;
+    }
+
+    async getTodosForUser(userid) {
+        const todoList = await this.models.todolist.findOne({
+            where: {
+                userid: userid
+            },
+            include: {
+                model: this.models.todo, // Specify the associated model
+                as: 'todos', // Specify the alias for the association
+            }
+        });
+        const obtainedTodos = todoList.todos;
+        return obtainedTodos;
     }
 
     async update(todoId, inputDescription, t) {
-        const updatedTodoList = await this.models.todo.update(
+        const updatedTodo = await this.models.todo.update(
             {description: inputDescription},
             {
                 where: {
@@ -66,20 +74,20 @@ class TodoListService {
                 returning: true,
                 transaction: t
             });
-        return updatedTodoList;
+        return updatedTodo;
     }
 
     async delete(todoId, t) {
-        const createdTodoList = await this.models.todo.destroy({
+        const createdTodo = await this.models.todo.destroy({
                 where: {
                     todoid: todoId,
                 },
                 transaction: t
             }
         );
-        return createdTodoList;
+        return createdTodo;
     }
 
 }
 
-module.exports = TodoListService;
+module.exports = TodoService;
