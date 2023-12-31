@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         userid: DataTypes.INTEGER
     });
     TodoList.associate = (models) => {
-        TodoList.hasMany(models.todo, {foreignKey: "todoid"});
+        TodoList.hasMany(models.todo, {foreignKey: "todolistid"});
         TodoList.belongsTo(models.user, {foreignKey: 'userid'});
     };
     return TodoList;
