@@ -5,12 +5,8 @@ const TodoService = require("../services/TodoService");
 const jwt = require("jsonwebtoken");
 
 const setupTodoRoutes = () => {
-    // map from localhost/todos to all todo_list items
-    const todoService = new TodoService(postgres.client);
-    // map from localhost/todos to all todo_list items
-
-    // Get all todos
-    router.get("/todos", async (req, res) => {
+    let jwtId, jwtUsername;
+    const authenticateUser = (req, res, next) => {
         const {authorization} = req.headers;
         // see if there are authorization headers present
         if (!authorization) {
@@ -19,7 +15,6 @@ const setupTodoRoutes = () => {
         // payload is the JWT
         const token = authorization.split(' ')[1];
         // TODO add this to all routes, and confirm that the decoded jwt ID is equal to the ID of the tasklist's user they are trying to edit
-        let jwtId;
         // verify JWT present
         jwt.verify(
             token,
@@ -28,11 +23,20 @@ const setupTodoRoutes = () => {
                 if (err)
                     return res.status(401).json({error: 'Unable to verify token'});
                 jwtId = decoded.id;
-                // jwtUsername = decoded.username;
-                // if (jwtId !== reqId && jwtUsername !== reqUsername)
-                //     return res.status(403).json({error: "Not allowed to view that user's data"});
+                jwtUsername = decoded.username;
+                next();
             }
-        )
+        );
+    };
+    // map from localhost/todos to all todo_list items
+    const todoService = new TodoService(postgres.client);
+    // router.use(authenticateUser); // Apply the middleware to all routes below
+
+    // map from localhost/todos to all todo_list items
+
+    // Get all todos
+    router.get("/todos", authenticateUser, async (req, res) => {
+
         try {
             // the routes definition file uses service as opposed to models directly,
             // as that is the role of the service class
@@ -61,7 +65,7 @@ const setupTodoRoutes = () => {
     });
 
     // get a single todo
-    router.get("/todo/:id", async (req, res) => {
+    router.get("/todo/:id", authenticateUser, async (req, res) => {
         try {
             const id = req.params.id;
             const todo = await todoService.get(id);
@@ -80,31 +84,8 @@ const setupTodoRoutes = () => {
     });
 
     // create a todo
-    router.post("/todos", async (req, res) => {
+    router.post("/todos", authenticateUser, async (req, res) => {
         try {
-            const {authorization} = req.headers;
-            // see if there are authorization headers present
-            if (!authorization) {
-                return res.status(401).json({error: "No authorization header sent"});
-            }
-            // payload is the JWT
-            const token = authorization.split(' ')[1];
-            // TODO add this to all routes, and confirm that the decoded jwt ID is equal to the ID of the tasklist's user they are trying to edit
-            let jwtId;
-            let jwtUsername;
-            // verify JWT present
-            jwt.verify(
-                token,
-                process.env.JWT_SECRET,
-                async (err, decoded) => {
-                    if (err)
-                        return res.status(401).json({error: 'Unable to verify token'});
-                    jwtId = decoded.id;
-                    jwtUsername = decoded.username;
-                    // if (jwtId !== reqId && jwtUsername !== reqUsername)
-                    //     return res.status(403).json({error: "Not allowed to view that user's data"});
-                }
-            )
             let result;
             let {description} = req.body;
             // create a transaction in which the callback is a function that creates a new todo
@@ -126,7 +107,7 @@ const setupTodoRoutes = () => {
     });
 
     // delete a todo
-    router.delete("/todo/:id", async (req, res) => {
+    router.delete("/todo/:id", authenticateUser, async (req, res) => {
         const id = req.params.id;
         let result;
         try {
@@ -153,7 +134,7 @@ const setupTodoRoutes = () => {
     });
 
     // update a todo
-    router.put("/todo/:id", async (req, res) => {
+    router.put("/todo/:id", authenticateUser, async (req, res) => {
         try {
             const desc = req.body.description;
             const id = req.params.id;

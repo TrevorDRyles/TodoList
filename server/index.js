@@ -5,7 +5,6 @@ const setupSignupRoutes = require("./routes/accounts");
 
 const setupServer = () => {
     const app = express();
-    // create a server and listen on port 3000
     app.use(cors());
     // allows accessing req.body
     app.use(express.json());

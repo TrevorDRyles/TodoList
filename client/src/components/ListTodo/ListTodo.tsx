@@ -80,7 +80,10 @@ function ListTodo() {
     const handleDelete = (id: string) => async () => {
         const requestOptions = {
             method: 'DELETE',
-            headers: {'Content-Type': 'application/json'}
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${token}`
+            }
         };
         try {
             let response = await fetch(`http://localhost:5000/todo/${id}`, requestOptions);
@@ -110,7 +113,10 @@ function ListTodo() {
         let descript = contentRef.current.value;
         const requestOptions = {
             method: 'PUT',
-            headers: {'Content-Type': 'application/json'},
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({description: descript})
         };
         try {
