@@ -1,6 +1,6 @@
 const Config = require("../config");
 
-// the service provides actions for the Todo like CRUD
+// the service provides actions for the "To-do" like CRUD
 class TodoService {
     constructor(sequelize) {
         // define client so the service can connect to the database
@@ -45,10 +45,10 @@ class TodoService {
         return obtainedTodo;
     }
 
-    async getAll() {
-        const obtainedTodos = await this.models.todo.findAll();
-        return obtainedTodos;
-    }
+    // async getAll() {
+    //     const obtainedTodos = await this.models.todo.findAll();
+    //     return obtainedTodos;
+    // }
 
     async getTodosForUser(userid) {
         const todoList = await this.models.todolist.findOne({

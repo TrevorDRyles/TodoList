@@ -36,7 +36,6 @@ const setupTodoRoutes = () => {
 
     // Get all todos
     router.get("/todos", authenticateUser, async (req, res) => {
-
         try {
             // the routes definition file uses service as opposed to models directly,
             // as that is the role of the service class
