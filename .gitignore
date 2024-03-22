@@ -9,7 +9,7 @@
 /coverage
 
 # production
-#client/build
+client/build
 app/build
 app/coverage
 
