@@ -1,35 +1,8 @@
 const TodoService = require("../services/TodoService");
 const {postgres} = require("../config");
-const TodoListService = require("../services/TodoListService");
-const todoService = new TodoService(postgres.client);
-const todoListService = new TodoListService(postgres.client);
 
-class Product {
-  constructor(id, {inventory, name, description, price, soldout, stores}) {
-    this.id = id;
-    this.name = name;
-    this.description = description;
-    this.price = price;
-    this.soldout = soldout;
-    this.stores = stores;
-    this.inventory = inventory;
-  }
-}
-
-
-const resolvers = {
-  // product resolvers
-  getProducts: ({id}) => {
-    return new Product(id, productDatabase[id]);
-  },
-  createProduct: ({input}) => {
-    let id = require('crypto').randomBytes(10).toString('hex');
-    productDatabase[id] = input;
-    return new Product(id, input);
-  },
-
+const resolvers = (todoService) => ({
   // to-do resolvers
-
   getTodos: async (parent, args, context) => {
     try {
       const todos = await todoService.getTodosForUser(args.req.user.id);
@@ -73,16 +46,6 @@ const resolvers = {
     }, parent.id);
     return result;
   },
-  // to-do list resolvers
-  // getTodoLists: async (parent, args, context) => {
-  //   try {
-  //     const todoLists = await todoService.getTodosForUser(args.req.user.id);
-  //     return todos;
-  //   } catch (err) {
-  //     console.error(err);
-  //     throw new Error('Failed to fetch todos');
-  //   }
-  // },
-};
+});
 
 module.exports = resolvers;

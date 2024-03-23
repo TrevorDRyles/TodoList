@@ -6,6 +6,9 @@ const {graphqlHTTP} = require('express-graphql');
 const schema = require("../server/data/schema");
 const resolvers = require("../server/data/resolvers");
 const jwt = require("jsonwebtoken");
+const TodoService = require("./services/TodoService");
+const {postgres} = require("./config");
+const todoService = new TodoService(postgres.client);
 
 const setupServer = () => {
     const app = express();
@@ -16,7 +19,7 @@ const setupServer = () => {
     app.use("/", setupTodoRoutes());
     app.use("/", setupSignupRoutes());
 
-    const root = resolvers;
+    const root = resolvers(todoService);
 
     // Middleware to check JWT
     const authMiddleware = (req, res, next) => {
