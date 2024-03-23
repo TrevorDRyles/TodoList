@@ -21,7 +21,8 @@ https://github.com/TrevorDRyles/TodoList/assets/44791579/d79b37f4-c2ca-4997-a5f7
 
 
 
-Testing at 100% coverage prior to adding user login flow:
-![image](https://github.com/TrevorDRyles/TrevorsTodoList/assets/44791579/6bbb883f-ed5c-4dcf-9654-b78936373396)
+Backend testing at 100%
+![image](https://github.com/TrevorDRyles/TodoList/assets/44791579/38180f68-e8b5-4f53-a04a-7e7a75b567f1)
+
 
 Adding updated tests is a WIP.
