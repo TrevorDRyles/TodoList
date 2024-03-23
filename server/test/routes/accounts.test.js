@@ -18,6 +18,7 @@ describe('test the accounts API', () => {
         // Clear the spy after each test
         inTransactionSpy.mockRestore();
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     test('POST /signup with existing user should return 409', async () => {
@@ -50,6 +51,96 @@ describe('test the accounts API', () => {
         expect(res.statusCode).toEqual(200);
     });
 
+    test('POST /signup with non-existing user should return 500', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce(null);
+
+        const createUserMockResult = { userid: null, username: null };
+        const createUser = jest.spyOn(UserService.prototype, 'create');
+        createUser.mockResolvedValueOnce(createUserMockResult);
+
+        // Mock jwt.sign to throw an error
+        const signSpy = jest.spyOn(jwt, 'sign');
+        signSpy.mockImplementationOnce((payload, secret, options, callback) => {
+            callback(new Error('Invalid user ID'));
+        });
+
+        // Mock UserService.prototype.inTransaction only for this specific test
+        inTransactionSpy.mockImplementationOnce(async (callback) => {
+            await callback(createUserMockResult);
+        });
+
+        const res = await request(app).post('/signup').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(500);
+    });
+
+    test('POST /signup with error in transaction should return 500', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce(null);
+
+        // Mock create to throw an error
+        const createUser = jest.spyOn(UserService.prototype, 'create');
+        createUser.mockRejectedValueOnce(new Error('Database error'));
+
+        const res = await request(app).post('/signup').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(500);
+    });
+
+    test('POST /signup with error in transaction should return 500', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce(null);
+
+        // Mock inTransaction to throw an error
+        const spyTransaction = jest.spyOn(UserService.prototype, 'inTransaction');
+        spyTransaction.mockRejectedValueOnce(new Error('Transaction error'));
+
+        const res = await request(app).post('/signup').send({ username: 'nonexistentuser21112' + uuidv4(), password: 'abc' });
+        expect(res.statusCode).toEqual(500);
+    });
+
+    test('POST /signup with non-existing user should return 200', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce(null);
+
+        const createUserMockResult = { userid: '123', username: 'trevor' };
+        const createUser = jest.spyOn(UserService.prototype, 'create');
+        createUser.mockResolvedValueOnce(createUserMockResult);
+
+        // Mock jwt.sign to throw an error
+        const signSpy = jest.spyOn(jwt, 'sign');
+        signSpy.mockImplementationOnce((payload, secret, options, callback) => {
+            callback(new Error());
+        });
+
+        // Mock UserService.prototype.inTransaction only for this specific test
+        inTransactionSpy.mockImplementationOnce(async (callback) => {
+            await callback(createUserMockResult);
+        });
+
+        const res = await request(app).post('/signup').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(500);
+    });
+
+    test("POST /signup with undefined resultOfCreate should return 500", async () => {
+        const getByUsername = jest
+          .spyOn(UserService.prototype, "getByUsername")
+          .mockReturnValueOnce(null);
+
+        const createUser = jest
+          .spyOn(UserService.prototype, "create")
+          .mockResolvedValueOnce(undefined);
+
+        inTransactionSpy.mockImplementationOnce(async (callback) => {
+            await callback({ createUser: undefined });
+        });
+
+        const res = await request(app)
+          .post("/signup")
+          .send({ username: "trevorrr" + uuidv4(), password: "pw" });
+        expect(res.statusCode).toEqual(500);
+    });
+
+     //
     test('POST /signup with non-existing user should return 500', async () => {
         const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
         getByUsername.mockReturnValueOnce(null);
@@ -207,9 +298,7 @@ describe('test the accounts API', () => {
         const res = await request(app).post('/signup').send({username: 'trevorrr' + uuidv4() , password: 'pw'});
         expect(res.statusCode).toEqual(500);
     });
-
-
-
+    //
     test('POST /signin should return 200', async () => {
         const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
         getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
@@ -242,7 +331,7 @@ describe('test the accounts API', () => {
 
         const bcryptSpy = jest.spyOn(bcrypt, 'compare');
         bcryptSpy.mockImplementationOnce((pw1, pw2) => {
-            return false
+            return false;
         });
 
         const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
@@ -250,12 +339,13 @@ describe('test the accounts API', () => {
     });
 
     test('POST /signin should return 500', async () => {
+
         const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
         getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
 
         const bcryptSpy = jest.spyOn(bcrypt, 'compare');
         bcryptSpy.mockImplementationOnce((pw1, pw2) => {
-            return true
+            return true;
         });
 
         // Mock jwt.sign
@@ -267,4 +357,23 @@ describe('test the accounts API', () => {
         const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
         expect(res.statusCode).toEqual(500);
     });
-});
+
+    test('POST /signin should return 500', async () => {
+        jest.restoreAllMocks();
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
+
+        jest.spyOn(bcrypt, 'compare').mockImplementation(() => {
+            throw new Error('bcrypt error');
+        });
+
+        // Mock jwt.sign
+        const signSpy = jest.spyOn(jwt, 'sign');
+        signSpy.mockImplementationOnce((payload, secret, options, callback) => {
+            callback(new Error('Invalid user ID'));
+        });
+
+        const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(500);
+    });
+})
