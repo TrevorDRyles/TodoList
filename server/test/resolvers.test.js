@@ -60,7 +60,7 @@ describe('Resolvers', () => {
     const args = { req: { user: { id: 123 } } };
 
     const result = await resolvers.createTodo({input: {username: 'test', description: 'test'}}, null, null);
-    expect(result).toEqual(undefined);
+    expect(result).toEqual(mockTodos);
   });
 
   it('getTodos resolver should return todos', async () => {

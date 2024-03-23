@@ -17,6 +17,7 @@ const SetupAccountRoutes = () => {
             // user exists already
             if (user) {
                 res.sendStatus(409);
+                return;
             }
             // encrypt password
             const passwordHash = await bcrypt.hash(password, 10);
@@ -46,7 +47,8 @@ const SetupAccountRoutes = () => {
                     (err, token) => {
                         // jwt could not be created
                         if (err) {
-                            return res.status(500).send(err);
+                            res.status(500).send(err);
+                            return;
                         }
                         // jwt created
                         res.status(200);

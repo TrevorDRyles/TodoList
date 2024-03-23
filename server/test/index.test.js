@@ -31,6 +31,13 @@ describe('Express Server Tests', () => {
     expect(response.status).toBe(400); // Expected 200 OK with valid token
   });
 
+  it('responds with 200 for GET /graphql with valid token in url', async () => {
+    const response = await request(app)
+      .get('/graphql?api_key=' + mockToken)
+      .query({ query: gqlQuery }); // Include the GraphQL query here
+    expect(response.status).toBe(400); // Expected 200 OK with valid token
+  });
+
   it('responds with 401 for GET /graphql with invalid token', async () => {
     const response = await request(app)
       .get('/graphql')
