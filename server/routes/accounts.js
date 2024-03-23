@@ -70,7 +70,8 @@ const SetupAccountRoutes = () => {
             const user = await userService.getByUsername(username);
             if (!user) {
                 // user does not exist
-                return res.sendStatus(401);
+                res.sendStatus(401);
+                return;
             }
             const usernameFound = user.username;
             const passwordFound = user.password;
@@ -88,7 +89,8 @@ const SetupAccountRoutes = () => {
                     },
                     (err, token) => {
                         if (err) {
-                            return res.status(500).send(err);
+                            res.status(500).send(err);
+                            return;
                         }
                         res.status(201);
                         res.json({token});

@@ -3,6 +3,7 @@ const app = require('../../index');
 const { v4: uuidv4 } = require('uuid');
 const UserService = require("../../services/UserService");
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 describe('test the accounts API', () => {
     let inTransactionSpy;
@@ -204,6 +205,66 @@ describe('test the accounts API', () => {
         });
 
         const res = await request(app).post('/signup').send({username: 'trevorrr' + uuidv4() , password: 'pw'});
+        expect(res.statusCode).toEqual(500);
+    });
+
+
+
+    test('POST /signin should return 200', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
+
+        const bcryptSpy = jest.spyOn(bcrypt, 'compare');
+        bcryptSpy.mockImplementationOnce((pw1, pw2) => {
+            return true
+        });
+
+        // Mock jwt.sign
+        const signSpy = jest.spyOn(jwt, 'sign');
+        signSpy.mockImplementationOnce((payload, secret, options, callback) => {
+            callback(null, 'mocked-token');
+        });
+
+        const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(201);
+    });
+
+    test('POST /signin should return 401', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce(null);
+        const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(401);
+    });
+
+    test('POST /signin should return 401', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
+
+        const bcryptSpy = jest.spyOn(bcrypt, 'compare');
+        bcryptSpy.mockImplementationOnce((pw1, pw2) => {
+            return false
+        });
+
+        const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
+        expect(res.statusCode).toEqual(401);
+    });
+
+    test('POST /signin should return 500', async () => {
+        const getByUsername = jest.spyOn(UserService.prototype, 'getByUsername');
+        getByUsername.mockReturnValueOnce({username: 'trevor', password: 'pw'});
+
+        const bcryptSpy = jest.spyOn(bcrypt, 'compare');
+        bcryptSpy.mockImplementationOnce((pw1, pw2) => {
+            return true
+        });
+
+        // Mock jwt.sign
+        const signSpy = jest.spyOn(jwt, 'sign');
+        signSpy.mockImplementationOnce((payload, secret, options, callback) => {
+            callback(new Error('Invalid user ID'));
+        });
+
+        const res = await request(app).post('/signin').send({ username: 'trevorrr' + uuidv4(), password: 'pw' });
         expect(res.statusCode).toEqual(500);
     });
 });
